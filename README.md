@@ -5,7 +5,7 @@ A simple Vagrant setup for launching VMs in OpenStack.
 
 ##SETUP: Begin by installing the following:
 
-- Clone the bootstrap repo: **git clone ssh://<user>@bfd-gerrit.os.cloud.twc.net:29418/bootstrap**
+- Clone the bootstrap repo: **git clone ssh://<user>@<url-for-git-repo>/<project-name>
 - Supported on MacOS 10.9 or later.
 - **Install** Vagrant: 1.6.5 or later - <https://www.vagrantup.com/downloads.html>
 - **Install these Vagrant plugins**
