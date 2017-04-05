@@ -1,11 +1,11 @@
 # another-vagrant-openstack
 
 ### Overview.
-A simple Vagrant setup for launching VMs in OpenStack.
+Done as an educational project to provide a simple Vagrant setup for launching VMs in OpenStack.
 
-##SETUP: Begin by installing the following:
+## SETUP: Begin by installing the following:
 
-- Clone the bootstrap repo: **git clone ssh://<user>@@github.com/<project-name>
+- Clone the bootstrap repo: **git clone ssh://<user>@@github.com/<project-name>**
 - Supported on MacOS 10.9 or later.
 - **Install** Vagrant: 1.6.5 or later - <https://www.vagrantup.com/downloads.html>
 - **Install these Vagrant plugins**
@@ -29,7 +29,7 @@ sudo easy_install python-glanceclient
 ```
 
 
-####SETUP: 
+#### SETUP PROJECT: 
 - **Add your openrc file to this cloned repo** : Uses horizon to download a copy of your openrc
   file for one of your user/tenant combos that MUST NOT have the admin role.
   Place the openrc file within your cloned repo.
