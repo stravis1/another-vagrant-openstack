@@ -1,0 +1,89 @@
+# For educational purposes only.  Leveraged from multiple examples of vagrant files to bring up a single 
+# or several  instances in openstack 
+########################
+require 'uri'
+require 'yaml'
+
+BASEDIR = File.absolute_path(File.dirname(__FILE__) + "/")
+SITE_CONFIG_DIR = File.join(BASEDIR, 'site_config')
+
+# The scirpt requires a machine configuration file in yaml format in the site_config dir.
+CONFIG_02 = File.join(SITE_CONFIG_DIR, 'example_site_config.yaml')
+
+# openstack image name in a seperate file. 
+IMAGE_CONFIG = File.join(SITE_CONFIG_DIR, 'openstack-image-name')
+
+def make_openstack_uri(port, path)
+  uri = URI(ENV['OS_AUTH_URL'])
+  uri.port = port
+  uri.path = path
+  uri.to_s
+end
+
+def get_openstack_image_name
+  return File.read(IMAGE_CONFIG).rstrip
+end
+
+unless Vagrant.has_plugin?("vagrant-reload")
+  raise "Vagrant reload plugin isn't installed. Run: vagrant plugin install vagrant-reload"
+end
+
+sites = [ CONFIG_02 ]
+Vagrant.configure(2) do |config|
+  config.ssh.username = "ubuntu" # if you want a differnt user name change this
+#  if File.exist?("../keys/#{ENV['OS_TENANT_NAME']}_keypair.pem")
+#    config.ssh.private_key_path = "../keys/#{ENV['OS_TENANT_NAME']}_keypair.pem"
+#  end
+  sites.each do |site|
+    site_config = YAML.load_file(site)
+    networks = site_config['network']
+    network_id = networks['id']
+    site_config['nodes'].each do |nodedata|
+      config.vm.define nodedata['name'], autostart: nodedata['autostart'] do |node|
+        #fqdn = nodedata['name'] + site_config['full_domain']
+        #node.vm.hostname = fqdn
+        node.vm.provider :openstack do |os|
+          # Regex or String need to change to packer generated image
+          os.server_name = "#{nodedata['name']}_#{ENV['OS_TENANT_NAME']}"
+          os.image = get_openstack_image_name
+          os.region = "#{ENV['OS_REGION_NAME']}"  
+          os.server_create_timeout = 300 # Time to wait in seconds for the server to be created
+          os.server_active_timeout = 300 # Time to wait in seconds for the server to become active
+          os.server_stop_timeout = 200   # Time to wait in seconds for the server to stop/halt
+          os.server_delete_timeout = 200 # Time to wait in seconds for the server to delete
+
+          os.openstack_auth_url = ENV['OS_AUTH_URL']
+          # These two can be removed when nova and neutron are updated to
+          # properly return https in their version responses.
+          os.openstack_compute_url = make_openstack_uri(8774, "/v2/#{ENV['OS_TENANT_ID']}")
+          os.openstack_network_url = make_openstack_uri(9696, '/v2.0')
+
+          # os.rsync_ignore_files = ['.rsyncignore']  # Prevents rsync of cache to openstack nodes
+          os.username     = ENV['OS_USERNAME']
+          os.password     = ENV['OS_PASSWORD']
+          os.tenant_name  = ENV['OS_TENANT_NAME']
+#           os.security_groups = ['ssh', 'http'] # Uncomment to specify a non default sec group such as 'ssh'
+#          if File.exist?("../keys/#{ENV['OS_TENANT_NAME']}_keypair.pem")
+#            os.keypair_name = "#{ENV['OS_TENANT_NAME']}_keypair"
+#          end
+          os.flavor       = /#{nodedata['flavor']}/  # Regex or String medium covers all types plus headroom
+          os.floating_ip_pool = 'Ext-Net'
+          os.floating_ip = nodedata['floating_ip']
+          os.floating_ip_pool_always_allocate = false 
+          os.networks = [{id: network_id, address: nodedata['primary_ip']}]
+
+        end
+
+        nodedata['vm_provision'].each do |shell_cmd_template|
+          shell_cmd = sprintf(shell_cmd_template, nodedata['vm_provision'])
+          node.vm.provision "shell", inline: shell_cmd
+        end
+
+####### Restart the nodes #######
+        node.vm.provision :reload
+
+      end
+    end
+  end
+end
+
