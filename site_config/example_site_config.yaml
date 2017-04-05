@@ -1,0 +1,29 @@
+---
+#region_name: region02
+#site: dev
+#full_domain: ".cloud.some-company.com"
+
+network:
+    id: 63779e01-9e5f-4b0c-bfda-4b9631e1b6da
+
+nodes:
+- name: server01
+  primary_ip: 192.168.1.03
+  floating_ip: 68.121.34.100
+  flavor: 8CPU.32GB
+  autostart: true
+  vm_provision:
+  - '/vagrant/site_config/common-setup.sh'
+  - '/vagrant/site_config/server01-setup.sh'
+- name: webserver01
+  primary_ip: 192.168.1.04
+  floating_ip: 68.121.34.101
+  flavor: 4CPU.16GB
+  autostart: true
+  vm_provision:
+  - '/vagrant/site_config/common-setup.sh'
+  - '/vagrant/site_config/webserver01.sh'
+
+
+
+
