@@ -5,7 +5,7 @@ A simple Vagrant setup for launching VMs in OpenStack.
 
 ##SETUP: Begin by installing the following:
 
-- Clone the bootstrap repo: **git clone ssh://<user>@<url-for-git-repo>/<project-name>
+- Clone the bootstrap repo: **git clone ssh://<user>@@github.com/<project-name>
 - Supported on MacOS 10.9 or later.
 - **Install** Vagrant: 1.6.5 or later - <https://www.vagrantup.com/downloads.html>
 - **Install these Vagrant plugins**
@@ -48,7 +48,7 @@ Tenant networks can be created:
 - Using Heat 
 - Using the neutron api. 
 
-### Create a Site_config file to describe your nodes
+### Create a Site_config directory and create a site-config file to describe your nodes
 - The site_config directory should contain:
   - An environment configuration yaml file that must contain:
 	- Network ID:  ID of network to launch your VMs on.
