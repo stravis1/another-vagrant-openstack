@@ -5,7 +5,7 @@ Done as an educational project to provide a simple Vagrant setup for launching V
 
 ## SETUP: Begin by installing the following:
 
-- Clone the bootstrap repo: **git clone ssh://<user>@@github.com/<project-name>**
+- Clone the repo: **git clone ssh://<user>@@github.com/<project-name>**
 - Supported on MacOS 10.9 or later.
 - **Install** Vagrant: 1.6.5 or later - <https://www.vagrantup.com/downloads.html>
 - **Install these Vagrant plugins**
