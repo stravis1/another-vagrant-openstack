@@ -48,9 +48,13 @@ Tenant networks can be created:
 - Using Heat 
 - Using the neutron api. 
 
+### Modify the Vagrantfile.example
+1. Remove the ".example" suffix
+2. Modify the site_config/example-* files as described below
+
 ### Create a Site_config directory and create a site-config file to describe your nodes
 - The site_config directory should contain:
-  - An environment configuration yaml file that must contain:
+  - An environment configuration yaml file that must contain: (see the examples_site_config.yaml file)
 	- Network ID:  ID of network to launch your VMs on.
 	- Node data: To included
 		- Node Name:
@@ -58,4 +62,5 @@ Tenant networks can be created:
 		- Floating-IP:
 		- Provisioning Scripts: 
 
-  - An Openstack_image_file which contains the name of a valid openstack image in Glance. 
+  - An Openstack_image_file which contains the name of a valid openstack image in Glance.
+    (see the example_openstack-image-name file) 
